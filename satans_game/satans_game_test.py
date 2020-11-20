@@ -1,48 +1,58 @@
 import unittest
+from grid import Grid
 
-from functools import reduce
+class SatansGAMETest(unittest.TestCase):
 
+    def setUp(self) -> None:
+        self.grid = Grid()
 
-class Grid():
-
-    def __init__(self):
-        self.size = (1000,1000)
-        self.create_grid()
-
-    def get_size(self):
-        return (len(self.grid), len(self.grid[0]))
-
-    def create_grid(self):
-        grid_fake = []
-        (a, b) = self.size
-        
-        self.grid = [[False for j in range(a)] for i in range(b)]
-	
-
-class Satans_GAME_Test(unittest.TestCase):
-    
     def test_validate_size(self):
-        grid = Grid()
-        self.assertEqual(grid.get_size(), (1000,1000))
+        self.assertEqual(self.grid.get_size(), (1000,1000))
 
     def test_all_lights_down(self):
-        grid = Grid()
-        
-        a = False
-        for i in range(1000):
-            tmp = reduce(lambda x,y : x or y , grid.grid[i])
-            a = a or tmp
-        self.assertFalse(a)
-#        for i in range(1000):
-#            for j in range(1000):
-#                with self.subTest(i=i*(j + 1)):
-#                    self.assertFalse(grid.grid[i][j])
+        lights_on = self.grid.count_lights_on()
+        self.assertEqual(lights_on, 0)
 
-        
-        
+    def test_turn_on_one_light(self):
+        self.grid._update((0, 0), (1, 1), 1)
+        self.assertEqual(self.grid.grid[0][0], True)
 
+    def test_turn_off_one_light(self):
+        self.grid._update((0, 0), (1, 1), 1)
+        self.assertEqual(self.grid.grid[0][0], True)
 
+        self.grid._update((0, 0), (1, 1), 0)
+        self.assertEqual(self.grid.grid[0][0], False)
 
+    def test_togle_one_light(self):
+        self.grid._update((0, 0), (1, 1), 2)
+        self.assertEqual(self.grid.grid[0][0], True)
 
+        self.grid._update((0, 0), (1, 1), 2)
+        self.assertEqual(self.grid.grid[0][0], False)
 
+    def test_all_on(self):
+        self.grid._update((0, 0), (999, 999), 1)
+        lights_on = self.grid.count_lights_on()
+        self.assertEqual(lights_on, 1000000)
 
+    def test_all_off(self):
+        lights_on = self.grid.count_lights_on()
+        self.assertEqual(lights_on, 0)
+
+    def test_toggle_all(self):
+        args = ((0, 0), (999, 999), 2)
+        self.grid._update(*args)
+        lights_on = self.grid.count_lights_on()
+        self.assertEqual(lights_on, 1000000)
+
+        self.grid._update(*args)
+        lights_on = self.grid.count_lights_on()
+        self.assertEqual(lights_on, 0)
+
+    def test_enum_lights_on(self):
+        args = ((0, 0), (999, 999), 2)
+        self.grid._update(*args)
+
+        lights_on = self.grid.count_lights_on()
+        self.assertEqual(lights_on, 1000000)

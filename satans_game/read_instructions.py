@@ -19,6 +19,12 @@ def get_instructions():
         second = get_coordinates(step[-1])
         op = ''.join(step[0:-2])
 
-        instructions.append((op, first, second))
+        op_enum = {
+            'turnoff': 0,
+            'turnon': 1,
+            'toggle': 2
+        }
+
+        instructions.append((op_enum[op], first, second))
     return instructions
 
